@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+</head>
+
+<body>
+    <div id="root">
+
+    </div>
+
+    <!-- https://unpkg.com/react@16.13.1/umd/react.development.js -->
+    <script src="./js/react.development.js"></script>
+    <!-- https://unpkg.com/react-dom@16.13.1/umd/react-dom.development.js -->
+    <script src="./js/react-dom.development.js"></script>
+    <!-- https://unpkg.com/browse/babel-standalone@6.26.0/babel.js -->
+    <script src="./js/babel.js"></script>
+    <script type="text/babel">
+    const rootHandle=document.getElementById('root')
+    
+        class DisplayView extends React.Component {
+
+            constructor() {
+                super()
+                this.state = {
+                    users: [
+                        {id:1, name:'user1', email:'user1@gmail.com'},
+                        {id:2, name:'user2', email:'user2@gmail.com'},
+                        {id:3, name:'user3', email:'user3@gmail.com'},
+                        {id:4, name:'user4', email:'user4@gmail.com'}
+                    ],
+                    view: ''
+                }
+            }
+
+            handleOptionChange = (view) => {
+                this.setState({view})
+            }
+
+            render() {
+                console.log('option', this.state.option);
+                return (
+                    <div>
+                        <input
+                            type="radio"
+                            name="view"
+                            checked={this.state.view === 'list'}
+                            onChange={() => {
+                                this.handleOptionChange('list')
+                            }}
+                        />List view
+                        <input
+                            type="radio"
+                            name="view"
+                            checked={this.state.view === 'table'}
+                            onChange={() => {
+                                this.handleOptionChange('table')
+                            }}
+                        />Table view <br/>
+                        { this.state.view !== '' && (this.state.view === 'list' ? <ListView data={this.state.users}/> : <TableView data={this.state.users}/>)}
+                    </div>
+                )
+            }
+        }
+
+
+        function ListView(props) {
+            // React.Fragment is not allow you to create extra HTML node. it helps you to put multiple components inside a react fragment and returns it. it is not going to hamper your design. helps a lot with css 
+            return (
+                <React.Fragment>
+                    <h2>List View</h2>
+                    <ul>
+                        {props.data.map((item) => {
+                            return <li>{`${item.name}- ${item.email}`}</li>
+                        })}
+                    </ul>
+
+                </React.Fragment>
+            )
+        }
+
+
+        function TableView(props) {
+            return (
+                <div>
+                    <h2>Table View</h2>
+                    <table border="1">
+                        <thead>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                        </thead>
+                        <tbody>
+                            {props.data.map((item) => {
+                                return (
+                                    <tr>
+                                        <td>{item.id}</td>
+                                        <td>{item.name}</td>
+                                        <td>{item.email}</td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                    
+                </div>
+            )
+        }
+
+    ReactDOM.render(<DisplayView />, rootHandle)
+    </script>
+
+</body>
+
+</html>

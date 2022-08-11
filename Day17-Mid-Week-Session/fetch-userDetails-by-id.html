@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+</head>
+
+<body>
+    <div id="root">
+
+    </div>
+
+    <!-- https://unpkg.com/react@16.13.1/umd/react.development.js -->
+    <script src="./js/react.development.js"></script>
+    <!-- https://unpkg.com/react-dom@16.13.1/umd/react-dom.development.js -->
+    <script src="./js/react-dom.development.js"></script>
+    <!-- https://unpkg.com/browse/babel-standalone@6.26.0/babel.js -->
+    <script src="./js/babel.js"></script>
+    <script type="text/babel">
+    const rootHandle=document.getElementById('root')
+
+        class FetchingDetails extends React.Component {
+            constructor() {
+                super()
+                this.state = {
+                    users: {},
+                    id:''
+                }
+            }
+
+            handleIdChange = (e) => {
+                this.setState({id: e.target.value})
+            }
+
+
+            handleOnSubmit = (e) => {
+                e.preventDefault()
+                const xhr = new XMLHttpRequest()
+                xhr.open('GET', 'https://jsonplaceholder.typicode.com/users')
+                xhr.send()
+                xhr.onload = () => {
+                    const users = JSON.parse(xhr.responseText).find(item => item.id === parseInt(this.state.id));
+                    users ? this.setState({users}) : this.setState({users: {}})
+                }
+            }
+
+            render() {
+                return (
+                    <div>
+                        <h2>Fetching Details</h2>
+                        <form onSubmit={this.handleOnSubmit}>
+                            <input
+                                type="text"
+                                value={this.state.id}
+                                onChange={this.handleIdChange}
+                            />
+                            <input type="submit" value="submit" />
+                        </form>
+                        <h2>User Details</h2>
+                        {(Object.keys(this.state.users).length === 0) ? <span style={{color:'red'}}>{'Please seach by valid user id'}</span> : <UserTable data={this.state.users} />}
+                    </div>
+                )
+            }
+        }
+
+        function UserTable(props) {
+            return (
+                <div>
+                    <table border="1">
+                        <thead>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>City</th>
+                            <th>Email</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{props.data.id}</td>
+                                <td>{props.data.name}</td>
+                                <td>{props.data.address.city}</td>
+                                <td>{props.data.email}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            )
+        }
+
+    ReactDOM.render(<FetchingDetails />, rootHandle)
+    </script>
+
+</body>
+
+</html>

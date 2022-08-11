@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+</head>
+
+<body>
+    <div id="root">
+
+    </div>
+
+    <!-- https://unpkg.com/react@16.13.1/umd/react.development.js -->
+    <script src="./js/react.development.js"></script>
+    <!-- https://unpkg.com/react-dom@16.13.1/umd/react-dom.development.js -->
+    <script src="./js/react-dom.development.js"></script>
+    <!-- https://unpkg.com/browse/babel-standalone@6.26.0/babel.js -->
+    <script src="./js/babel.js"></script>
+    <script type="text/babel">
+    const rootHandle=document.getElementById('root')
+    
+    class GetLocation extends React.Component {
+        constructor() {
+            super()
+            this.state = {
+                latitude: '',
+                longitude: ''
+            }
+        }
+
+        handleClick = () => {
+            const xhr = new XMLHttpRequest()
+             xhr.open('GET', 'https://developers.google.com/maps/documentation/geolocation/support')
+             xhr.send()
+             xhr.onload = () => {
+                 const resp = JSON.parse(xhr.responseText)
+                 console.log('RESP', resp)
+             }
+             
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    console.log('Position', position)
+                    this.setState({latitude: position.coords.latitude, longitude: position.coords.longitude})
+                    }
+                )
+            }
+        }
+
+        render() {
+            return (
+                <div>
+                    <button onClick={this.handleClick} style={{color: 'blue'}}>Get My Location</button>
+                    <p>your current location is: </p>
+                    <p>Latitude: {this.state.latitude} </p>
+                    <p>Longitude: {this.state.longitude}</p>
+                    <p>Current tempareture is: </p>
+                </div>
+            )
+        }
+    }
+
+    ReactDOM.render(<GetLocation />, rootHandle)
+    </script>
+
+</body>
+
+</html>
